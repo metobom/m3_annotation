@@ -21,6 +21,10 @@ class metos_annotation_tool():
         self.log_check1 = True # Q ile bir sonraki resme geçtiğizde kaç nokta işaretlediğinizi, noktaların u, v kordinatlarını, ve lines listinin uzunluğunu yazdırmak için ayarlayın.
         self.shut_down_key = 'x' # Programı kapatmak için istediğiniz tuşu ayarlayın.
         self.next_image_key = 'q' # Bir sonraki resme geçmek için istediğiniz tuşu ayarlayın.
+        self.line_color = 'y' # {'b', 'g', 'r', 'c', 'm', 'y', 'k', 'w'}
+        self.line_alpha = 0.6 # noktalari secerken olusan dogrularin seffafligi
+        self.guideline_alpha = 0.7
+        self.guidline_thickness = 2 # yardimci dogrularin kalinligi
 
         self.image_path = 'Images/' # Veri setinizde bulunan resimlerin bulunacağı yol.
         self.annotated_image_path = 'Images/annotated_images/' # Işaretlediğniz resimlerin taşınacağı yol.
@@ -80,7 +84,7 @@ class metos_annotation_tool():
                 for i in range(image.shape[0]):
                     if i % 22 == 0:
                         black_image = cv2.line(black_image, (0, i), (image.shape[1], i), (255, 0, 0), 2)
-                image = cv2.addWeighted(image, 1, black_image, 0.7, 2)
+                image = cv2.addWeighted(image, 1, black_image, self.guideline_alpha, self.guidline_thickness)
                 # plot
                 fig, ax = plt.subplots(1, figsize = self.window_size)
                 ax = plt.axes([0.0, 0.0, 1.0, 1.0])
@@ -91,7 +95,7 @@ class metos_annotation_tool():
                 mngr.window.wm_geometry(self.window_start_loc)
 
                 # for visualizing linestrips
-                self.toggle_selector = PolygonSelector(ax, True, True, lineprops = dict(color = 'y', linestyle = '-', linewidth = 2, alpha = 0.6)) # (c m w k y)
+                self.toggle_selector = PolygonSelector(ax, True, True, lineprops = dict(color = self.line_color, linestyle = '-', linewidth = 2, alpha = self.line_alpha)) # (c m w k y)
                 # events
                 line_strips = plt.connect('button_press_event', self.point_callback)
                 key = plt.connect('key_press_event', self.onpress)
@@ -102,4 +106,3 @@ class metos_annotation_tool():
 if __name__ == "__main__":
     app = metos_annotation_tool()
     app.main()
-
